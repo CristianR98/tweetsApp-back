@@ -30,7 +30,7 @@ public class TweetsService {
         tw = tf.getInstance();
     }
     
-    public Respuesta<ArrayList<Tweet>> getweets(String busqueda, int count) {
+    public Respuesta<ArrayList> getweets(String busqueda, int count) {
         
         Respuesta resp = new Respuesta(200, true, "OK!");
         ArrayList<Tweet> listaTweets = new ArrayList();
@@ -41,19 +41,36 @@ public class TweetsService {
         try {
             QueryResult qr =  tw.search(query);
             
-            for (int i = 0; i < qr.getTweets().size(); i++) {
+            if (qr.getTweets().size() == 100) {
+                query = qr.nextQuery();
+                count -= 100;
+                query.setCount(count);
+                qr = tw.search(qr.nextQuery());
+            }
+            
+            int size = qr.getTweets().size() > count ?10:qr.getTweets().size() ;
+            
+            count -= 10;
+            
+            
+            for (int i = 0; i < size; i++) {
                 
-                Status status = qr.getTweets().get(i);
+                Status status = qr.getTweets().get(count + i);
                 Tweet tweet = new Tweet();
                 UsuarioTwitter user = new UsuarioTwitter();
                 
                 tweet.setId(status.getId());
                 tweet.setTexto(status.getText());
                 tweet.setFecha(status.getCreatedAt().toString());
+                tweet.setCantidadFavoritos(status.getFavoriteCount());
+                tweet.setCantidadRetweet(status.getRetweetCount());
+                tweet.setUrl( "https://twitter.com/" + status.getUser().getScreenName() + "/status/" + status.getId());
                 
                 user.setId(status.getUser().getId());
-                user.setName(status.getUser().getScreenName());
+                user.setName(status.getUser().getName());
+                user.setScreenName(status.getUser().getScreenName());
                 user.setImage(status.getUser().get400x400ProfileImageURL());
+                user.setUrl("https://twitter.com/" + user.getScreenName());
                 tweet.setUser(user);
                 
                 listaTweets.add(tweet);
@@ -64,6 +81,8 @@ public class TweetsService {
             
         }catch(TwitterException e) {
             resp = new Respuesta(500, false, e.getMessage());
+        }catch(IndexOutOfBoundsException e) {
+            resp.setContent(listaTweets);
         }
 
         return resp;

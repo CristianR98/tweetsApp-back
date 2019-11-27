@@ -5,6 +5,9 @@ public class Tweet {
     private long id;
     private String texto;
     private String fecha;
+    private int cantidadFavoritos;
+    private int cantidadRetweet;
+    private String url;
     private UsuarioTwitter user;
     
     public Tweet () {
@@ -41,6 +44,30 @@ public class Tweet {
 
     public void setUser(UsuarioTwitter user) {
         this.user = user;
+    }
+
+    public int getCantidadFavoritos() {
+        return cantidadFavoritos;
+    }
+
+    public void setCantidadFavoritos(int cantidadFavoritos) {
+        this.cantidadFavoritos = cantidadFavoritos;
+    }
+
+    public int getCantidadRetweet() {
+        return cantidadRetweet;
+    }
+
+    public void setCantidadRetweet(int cantidadRetweet) {
+        this.cantidadRetweet = cantidadRetweet;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
     
    

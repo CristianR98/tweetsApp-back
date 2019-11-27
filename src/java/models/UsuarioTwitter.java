@@ -4,7 +4,9 @@ public class UsuarioTwitter {
     
     private long id;
     private String name;
+    private String screenName;
     private String image;
+    private String url;
     
     public UsuarioTwitter() {
         
@@ -18,6 +20,16 @@ public class UsuarioTwitter {
         this.id = id;
     }
 
+    public String getScreenName() {
+        return screenName;
+    }
+
+    public void setScreenName(String screenName) {
+        this.screenName = screenName;
+    }
+
+    
+    
     public String getName() {
         return name;
     }
@@ -32,6 +44,14 @@ public class UsuarioTwitter {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
      
     
