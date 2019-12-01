@@ -25,7 +25,7 @@ public class busqueda extends HttpServlet {
             String termino = request.getParameter("termino");
             int count = Integer.parseInt(request.getParameter("cantidad"));
             
-            Respuesta resp = tweetsService.getweets(termino, count);
+            Respuesta resp = tweetsService.getTweets(termino, count);
             
             if (!resp.isOk()) {
                 

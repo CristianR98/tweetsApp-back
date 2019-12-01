@@ -2,6 +2,7 @@ package services;
 
 
 import java.util.ArrayList;
+import java.util.List;
 import models.Respuesta;
 import models.Tweet;
 import models.UsuarioTwitter;
@@ -30,7 +31,7 @@ public class TweetsService {
         tw = tf.getInstance();
     }
     
-    public Respuesta<ArrayList> getweets(String busqueda, int count) {
+    public Respuesta<ArrayList> getTweets(String busqueda, int count) {
         
         Respuesta resp = new Respuesta(200, true, "OK!");
         ArrayList<Tweet> listaTweets = new ArrayList();
@@ -41,22 +42,27 @@ public class TweetsService {
         try {
             QueryResult qr =  tw.search(query);
             
-            if (qr.getTweets().size() == 100) {
+            if (qr.getTweets().size() >= 100) {
+                System.out.println(100);
                 query = qr.nextQuery();
-                count -= 100;
+                count -= count - 10;
                 query.setCount(count);
-                qr = tw.search(qr.nextQuery());
+                qr = tw.search(query);
             }
             
-            int size = qr.getTweets().size() > count ?10:qr.getTweets().size() ;
+            List<Status> tweets = qr.getTweets();
             
             count -= 10;
             
+            int size = tweets.size() < query.getCount() ?tweets.size() - count:10 ;
             
+            System.out.println(size + ", " + count);
+            System.out.println(tweets.size() + ", " + query.getCount());
             for (int i = 0; i < size; i++) {
                 
-                Status status = qr.getTweets().get(count + i);
+                Status status = tweets.get(count + i);
                 Tweet tweet = new Tweet();
+                
                 UsuarioTwitter user = new UsuarioTwitter();
                 
                 tweet.setId(status.getId());
@@ -81,8 +87,6 @@ public class TweetsService {
             
         }catch(TwitterException e) {
             resp = new Respuesta(500, false, e.getMessage());
-        }catch(IndexOutOfBoundsException e) {
-            resp.setContent(listaTweets);
         }
 
         return resp;
